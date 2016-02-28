@@ -110,7 +110,7 @@ class Momo {
     		$result = json_decode($this->getSearch($search), true);
     		return $result['included'][0]['attributes']['title'] . ' harganya '.$result['included'][0]['attributes']['pricing']['effective_price'] . ' beli aja?';
     	}
-    	return self::TEMPLATE_NOT_FOUND[array_rand(self::TEMPLATE_NOT_FOUND)];
+    	return $this->randomize(self::TEMPLATE_NOT_FOUND);
     }
 
     /**
@@ -122,7 +122,7 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (in_array($value, self::ACCEPT))
-    			return self::TEMPLATE_SUCCESS[array_rand(self::TEMPLATE_SUCCESS)];
+    			return $this->randomize(self::TEMPLATE_SUCCESS);
     	}
     	return false;
     }
@@ -136,7 +136,7 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (in_array($value, self::REJECT))
-    			return self::TEMPLATE_REJECTED[array_rand(self::TEMPLATE_REJECTED)];
+    			return $this->randomize(self::TEMPLATE_REJECTED);
     	}
     	return false;
     }
@@ -150,9 +150,19 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (array_key_exists($value, self::SEARCH))
-    			return self::SEARCH[$value][array_rand(self::SEARCH[$value])];
+    			return $this->randomize(self::SEARCH[$value]);
     	}
     	return false;
+    }
+
+    /**
+     *
+     * @param  array  $value
+     * @return array
+     */
+    protected function randomize(array $value)
+    {
+    	return $value[array_rand($value)];
     }
 
 
