@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\ClientException;
 
 class Momo {
 	const BASE_URI = 'http://api.mataharimall.net';
-	const SEARCH = array(
+	const UNSEARCH_KEYWORD = array(
 		'unik' => array(
 			'jam tangan',
 			'sepatu',
@@ -50,6 +50,22 @@ class Momo {
 			'fanta',
 			'teh javana'
 		)
+	);
+	const SEARCH_KEYWORD = array(
+		'sepatu',
+		'cewek',
+		'cowok',
+		'wanita',
+		'pria',
+		'anak',
+		'nike',
+		'adidas',
+		'sandal',
+		'smartphone',
+		'xiaomi',
+		'samsung',
+		'nokia',
+		'hp'
 	);
 	const ACCEPT = array(
 		'ya',
@@ -102,14 +118,20 @@ class Momo {
      */
     public function result()
     {
+    	if ($search = $this->searchableKeyword()) {
+    		$result = json_decode($this->getSearch($search), true);
+    		if (isset($result['included'][0]))
+    			return $result['included'][0]['attributes']['title'] . ' harganya '.$result['included'][0]['attributes']['pricing']['effective_price'] . ' beli aja?';
+    	}
+    	if ($search = $this->unSearchableKeyword()) {
+    		$result = json_decode($this->getSearch($search), true);
+    		if (isset($result['included'][0]))
+    			return $result['included'][0]['attributes']['title'] . ' harganya '.$result['included'][0]['attributes']['pricing']['effective_price'] . ' beli aja?';
+    	}
     	if ($accepted = $this->isAccepted())
     		return $accepted;
     	if ($rejected = $this->isRejected())
     		return $rejected;
-    	if ($search = $this->isSearchable()) {
-    		$result = json_decode($this->getSearch($search), true);
-    		return $result['included'][0]['attributes']['title'] . ' harganya '.$result['included'][0]['attributes']['pricing']['effective_price'] . ' beli aja?';
-    	}
     	return $this->randomize(self::TEMPLATE_NOT_FOUND);
     }
 
@@ -145,14 +167,30 @@ class Momo {
      *
      * @return bool
      */
-    protected function isSearchable()
+    protected function unSearchableKeyword()
     {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
-    		if (array_key_exists($value, self::SEARCH))
-    			return $this->randomize(self::SEARCH[$value]);
+    		if (array_key_exists($value, self::UNSEARCH_KEYWORD))
+    			return $this->randomize(self::UNSEARCH_KEYWORD[$value]);
     	}
     	return false;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    protected function searchableKeyword()
+    {
+    	$pool = explode(' ', $this->message);
+    	$keyword = '';
+    	foreach ($pool as $value) {
+    		if (in_array($value, self::SEARCH_KEYWORD))
+    			$keyword .= $value . ' ';
+    	}
+    	return $keyword;
+    	return isset($keyword) ? $keyword : false;
     }
 
     /**
