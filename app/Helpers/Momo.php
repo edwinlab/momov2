@@ -12,6 +12,11 @@ class Momo {
 			'sepatu',
 			'boneka'
 		),
+		'kado' => array(
+			'jam tangan',
+			'sepatu',
+			'boneka'
+		),
 		'lapar' => array(
 			'pringles',
 			'oatbits',
@@ -20,6 +25,30 @@ class Momo {
 			'spikoe',
 			'sedaap',
 			'lusiana almond'
+		),
+		'makanan' => array(
+			'pringles',
+			'oatbits',
+			'indomie',
+			'foodbit',
+			'spikoe',
+			'sedaap',
+			'lusiana almond'
+		),
+		'cemilan' => array(
+			'pringles',
+			'oatbits',
+			'foodbit',
+			'spikoe',
+			'lusiana almond'
+		),
+		'minuman' => array(
+			'teh pucuk',
+			'pocari',
+			'sprite',
+			'coca cola',
+			'fanta',
+			'teh javana'
 		)
 	);
 	const ACCEPT = array(
@@ -34,6 +63,23 @@ class Momo {
 		'ga',
 		'no'
 	);
+	const TEMPLATE_NOT_FOUND = array(
+		'Momo ga bisa nemuin yang kamu cari, ganti keyword kakak.',
+		'Opps momo ga bisa nemuin barang yang kamu cari, ganti yang lain.',
+		'Keyword yang kakak masukin ga ditemuin, ganti yang lain.',
+		"Anda kurang beruntung, coba lagi."
+	);
+	const TEMPLATE_SUCCESS = array(
+		'Pesanan kamu lagi di proses momo. Terima kasih.',
+		'Terima kasih pesanannya, pesanan lagi di proses yang tabah ya.',
+		'Pesanan masih momo proses, yang sabar ya.'
+	);
+	const TEMPLATE_REJECTED = array(
+		'Pesanan dibatalkan, mau cari barang lain?',
+		':( mau cari barang lain?',
+		'Yakin di batalin? atau mau cari barang lain?'
+	);
+
 
 	private $message;
 	private $bearer;
@@ -64,6 +110,7 @@ class Momo {
     		$result = json_decode($this->getSearch($search), true);
     		return $result['included'][0]['attributes']['title'] . ' harganya '.$result['included'][0]['attributes']['pricing']['effective_price'] . ' beli aja?';
     	}
+    	return self::TEMPLATE_NOT_FOUND[array_rand(self::TEMPLATE_NOT_FOUND)];
     }
 
     /**
@@ -75,7 +122,7 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (in_array($value, self::ACCEPT))
-    			return "Pesanan kamu lagi di proses momo. Terima kasih";
+    			return self::TEMPLATE_SUCCESS[array_rand(self::TEMPLATE_SUCCESS)];
     	}
     	return false;
     }
@@ -89,7 +136,7 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (in_array($value, self::REJECT))
-    			return "Mau cari barang lain?";
+    			return self::TEMPLATE_REJECTED[array_rand(self::TEMPLATE_REJECTED)];
     	}
     	return false;
     }
