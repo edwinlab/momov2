@@ -60,8 +60,10 @@ class Momo {
     		return $accepted;
     	if ($rejected = $this->isRejected())
     		return $rejected;
-    	if ($search = $this->isSearchable())
-    		return $this->getSearch($search);
+    	if ($search = $this->isSearchable()) {
+    		$result = json_decode($this->getSearch($search), true);
+    		return $result['included'][0]['attributes']['title'] . ' harganya '.$result['included'][0]['attributes']['pricing']['effective_price'] . ' beli aja?';
+    	}
     }
 
     /**
@@ -73,7 +75,7 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (in_array($value, self::ACCEPT))
-    			return "Yes";
+    			return "Pesanan kamu lagi di proses momo. Terima kasih";
     	}
     	return false;
     }
@@ -87,7 +89,7 @@ class Momo {
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (in_array($value, self::REJECT))
-    			return "No";
+    			return "Mau cari barang lain?";
     	}
     	return false;
     }
@@ -98,7 +100,6 @@ class Momo {
      */
     protected function isSearchable()
     {
-    	// return self::SEARCH['unik'];
     	$pool = explode(' ', $this->message);
     	foreach ($pool as $value) {
     		if (array_key_exists($value, self::SEARCH))
