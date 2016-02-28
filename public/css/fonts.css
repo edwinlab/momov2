@@ -1,0 +1,18 @@
+@font-face {
+  font-family: 'Gotham Condensed';
+  src: url('../fonts/Gotham Condensed Bold.otf');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url('../fonts/Gotham Medium.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url('../fonts/Gotham black.ttf');
+  font-weight: bold;
+  font-style: normal;
+}
